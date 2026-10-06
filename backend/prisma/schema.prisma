@@ -1,0 +1,66 @@
+// Prisma Schema for Store Rating Web Application
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SYSTEM_ADMIN
+  NORMAL_USER
+  STORE_OWNER
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  address      String
+  role         Role     @default(NORMAL_USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  stores  Store[]  @relation("OwnerStores")
+  ratings Rating[]
+
+  @@map("users")
+}
+
+model Store {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  address   String
+  ownerId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  owner   User     @relation("OwnerStores", fields: [ownerId], references: [id], onDelete: Cascade)
+  ratings Rating[]
+
+  @@map("stores")
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  storeId   Int
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  // DB-level unique constraint to prevent duplicate ratings
+  @@unique([userId, storeId], name: "userId_storeId")
+  @@map("ratings")
+}

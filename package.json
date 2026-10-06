@@ -1,0 +1,28 @@
+{
+  "name": "store-rating-web-app",
+  "version": "1.0.0",
+  "description": "Full Stack Store Rating Web Application",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "server": "nodemon backend/src/server.js",
+    "client": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "prisma:generate": "npx prisma generate --schema=backend/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --schema=backend/prisma/schema.prisma",
+    "seed": "node backend/prisma/seed.js",
+    "test": "jest --config=jest.config.js --runInBand",
+    "test:watch": "jest --config=jest.config.js --watch",
+    "build": "npm run build --prefix frontend"
+  },
+  "keywords": [
+    "express",
+    "react",
+    "postgresql",
+    "prisma",
+    "jwt",
+    "store-rating"
+  ],
+  "author": "Full Stack Engineer",
+  "license": "ISC"
+}
